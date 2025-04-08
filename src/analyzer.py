@@ -1,4 +1,5 @@
 from collections import Counter
+from tokenizer import preprocess
 
 def analyze_tokens(tokens, stopwords):
     token_amount = len(tokens)
@@ -17,6 +18,7 @@ def analyze_tokens(tokens, stopwords):
     }
 
 def get_top_terms(freq_counter, stopwords_set=None, top_n=50):
+
     filtered_items = []
 
     for word, count in freq_counter.items():
@@ -28,3 +30,11 @@ def get_top_terms(freq_counter, stopwords_set=None, top_n=50):
     sorted_items = sorted(filtered_items, key=lambda item: item[1], reverse=True)
 
     return sorted_items[:top_n]
+
+def get_preprocessing_stats(text):
+    return {
+        "original": len(preprocess(text)),
+        "only-removed-stopwords": len(preprocess(text, True)),
+        "removed-stopwords+stemming": len(preprocess(text, True, True)),
+        "removed-stopwords+stemming+lemmatization": len(preprocess(text, True, True, True)),
+    }

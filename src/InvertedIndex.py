@@ -1,7 +1,6 @@
 import json
-import os
 from collections import defaultdict
-from tokenizer import tokenize
+from tokenizer import preprocess
 
 class InvertedIndex:
     def __init__(self):
@@ -9,7 +8,7 @@ class InvertedIndex:
         self.doc_count = 0
 
     def add_doc(self, doc_id, text):
-        tokens = tokenize(text)
+        tokens = preprocess(text, True, True, True)
         for token in tokens:
             self.index[token].add(doc_id)
         self.doc_count += 1
@@ -31,13 +30,3 @@ class InvertedIndex:
         with open(stats_path, 'r') as f:
             stats = json.load(f)
             self.doc_count = stats["doc_count"]
-
-
-    def search(self, query):
-        tokens = tokenize(query)
-        if not tokens:
-            return set()
-        results = self.index.get(tokens[0], set()).copy()
-        for token in tokens[1:]:
-            results &= self.index.get(token, set())
-        return results
